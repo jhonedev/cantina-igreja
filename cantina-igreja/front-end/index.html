@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cantina da Igreja</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Cantina - Igreja Presbiteriana Cidade dos Funcionários</h1>
+    <form id="formPedido">
+        <label for="item">Item:</label>
+        <input type="text" id="item" name="item" required>
+        <label for="valor">Valor:</label>
+        <input type="number" id="valor" name="valor" step="0.01" required>
+        <button type="submit">Adicionar Pedido</button>
+    </form>
+
+    <h2>Pedidos</h2>
+    <ul id="listaPedidos"></ul>
+
+    <h2>Total: R$ <span id="total">0.00</span></h2>
+
+    <script src="script.js"></script>
+</body>
+</html>
