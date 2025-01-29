@@ -27,5 +27,28 @@ def calcular_total_route():
     total = calcular_total()
     return jsonify({"total": total})
 
+# Rota para excluir um pedido
+@app.route('/api/pedidos/<int:pedido_id>', methods=['DELETE'])
+def excluir_pedido_route(pedido_id):
+    sucesso = excluir_pedido(pedido_id)
+    if sucesso:
+        return jsonify({"message": "Pedido excluído com sucesso"}), 200
+    else:
+        abort(404, description="Pedido não encontrado")
+
+# Rota para editar um pedido
+@app.route('/api/pedidos/<int:pedido_id>', methods=['PUT'])
+def editar_pedido_route(pedido_id):
+    dados = request.json
+    if not dados or 'item' not in dados or 'valor' not in dados:
+        abort(400, description="Dados inválidos para edição")
+
+    sucesso = editar_pedido(pedido_id, dados['item'], dados['valor'])
+    if sucesso:
+        return jsonify({"message": "Pedido atualizado com sucesso"}), 200
+    else:
+        abort(404, description="Pedido não encontrado")
+
+
 if __name__ == '__main__':
     app.run(debug=True)

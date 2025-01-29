@@ -8,15 +8,57 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const response = await fetch('http://127.0.0.1:5000/api/pedidos');
             const pedidos = await response.json();
-
+    
             listaPedidos.innerHTML = pedidos.map(pedido => `
-                <li>${pedido.item} - R$ ${Number(pedido.valor).toFixed(2)}</li>
+                <li>
+                    ${pedido.item} - R$ ${Number(pedido.valor).toFixed(2)}
+                    <button onclick="editarPedido(${pedido.id}, '${pedido.item}', ${pedido.valor})">✏️</button>
+                    <button onclick="excluirPedido(${pedido.id})">🗑️</button>
+                </li>
             `).join('');
         } catch (error) {
             console.error('Erro ao carregar pedidos:', error);
         }
     }
 
+    async function excluirPedido(id) {
+        if (confirm('Tem certeza que deseja excluir este pedido?')) {
+            try {
+                const response = await fetch(`http://127.0.0.1:5000/api/pedidos/${id}`, { method: 'DELETE' });
+                if (response.ok) {
+                    carregarPedidos();
+                    carregarTotal();
+                } else {
+                    console.error('Erro ao excluir pedido');
+                }
+            } catch (error) {
+                console.error('Erro ao excluir pedido:', error);
+            }
+        }
+    }
+    
+    function editarPedido(id, itemAtual, valorAtual) {
+        const novoItem = prompt("Editar item:", itemAtual);
+        const novoValor = parseFloat(prompt("Editar valor:", valorAtual));
+        
+        if (novoItem && !isNaN(novoValor)) {
+            fetch(`http://127.0.0.1:5000/api/pedidos/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ item: novoItem, valor: novoValor })
+            })
+            .then(response => {
+                if (response.ok) {
+                    carregarPedidos();
+                    carregarTotal();
+                } else {
+                    console.error('Erro ao editar pedido');
+                }
+            })
+            .catch(error => console.error('Erro ao editar pedido:', error));
+        }
+    }
+    
     // Função para carregar apenas o valor total
     async function carregarTotal() {
         try {
@@ -53,6 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Carregar pedidos e total ao iniciar a página
-    // carregarPedidos();
     carregarTotal();
+    carregarPedidos();
 });
