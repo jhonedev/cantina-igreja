@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 listaPedidos.innerHTML = pedidos.map(pedido => `
                     <li>
                         ${pedido.item} - R$ ${Number(pedido.valor).toFixed(2)}
-                        <button onclick="editarPedido(${pedido.id}, '${pedido.item}', ${pedido.valor})">✏️</button>
-                        <button onclick="excluirPedido(${pedido.id})">🗑️</button>
+                        <button class="btn-editar" onclick="editarPedido(${pedido.id}, '${pedido.item}', ${pedido.valor})">Editar</button>
+                        <button class="btn-excluir" onclick="excluirPedido(${pedido.id})">Excluir</button>
                     </li>
                 `).join('');
             }
