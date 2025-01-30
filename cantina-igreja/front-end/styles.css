@@ -1,23 +1,29 @@
 /* Estilos gerais */
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 0;
+    padding: 0;
     background-color: #f9f9f9;
     color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 h1 {
     text-align: center;
     color: #4CAF50;
+    margin-bottom: 20px;
 }
 
 form {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-width: 400px;
-    margin: 0 auto 20px;
+    margin-bottom: 20px;
 }
 
 label {
@@ -50,8 +56,6 @@ button:hover {
 ul {
     list-style-type: none;
     padding: 0;
-    max-width: 600px; /* Aumentei a largura para acomodar as colunas */
-    margin: 0 auto;
 }
 
 li {
@@ -78,7 +82,7 @@ h2 {
 /* Estilos para os botões de editar e excluir */
 .botoes {
     display: flex;
-    gap: 5px; /* Espaço entre os botões */
+    gap: 5px;
 }
 
 .btn-editar, .btn-excluir {
@@ -102,7 +106,7 @@ h2 {
     background-color: #e53935;
 }
 
-/* Estilos para os controles de paginação */
+/* Estilos para a paginação */
 #paginacao {
     display: flex;
     justify-content: center;

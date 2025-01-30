@@ -4,22 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cantina da Igreja</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Cantina - Igreja Presbiteriana Cidade dos Funcionários</h1>
-    <form id="formPedido">
-        <label for="item">Item:</label>
-        <input type="text" id="item" name="item" required>
-        <label for="valor">Valor:</label>
-        <input type="number" id="valor" name="valor" step="0.01" required>
-        <button type="submit">Adicionar Pedido</button>
-    </form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">Cantina da Igreja</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="index.html">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="pedidos.html">Pedidos</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
 
-    <button onclick="window.location.href='pedidos.html'">Ver Todos os Pedidos</button>
+    <div class="container">
+        <h1>Cantina UPA</h1>
+        <form id="formPedido">
+            <label for="item">Item:</label>
+            <input type="text" id="item" name="item" required>
+            <label for="valor">Valor:</label>
+            <input type="number" id="valor" name="valor" step="0.01" required>
+            <button type="submit">Adicionar Pedido</button>
+        </form>
 
-    <h2>Total: R$ <span id="total">0.00</span></h2>
+        <h2>Total: R$ <span id="total">0.00</span></h2>
+    </div>
 
+    <!-- Bootstrap JS (opcional, necessário para funcionalidades como dropdowns) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
