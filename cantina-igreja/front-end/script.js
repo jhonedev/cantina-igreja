@@ -12,9 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (listaPedidos) {
                 listaPedidos.innerHTML = pedidos.map(pedido => `
                     <li>
-                        ${pedido.item} - R$ ${Number(pedido.valor).toFixed(2)}
-                        <button class="btn-editar" onclick="editarPedido(${pedido.id}, '${pedido.item}', ${pedido.valor})">Editar</button>
-                        <button class="btn-excluir" onclick="excluirPedido(${pedido.id})">Excluir</button>
+                        <span>${pedido.item} - R$ ${Number(pedido.valor).toFixed(2)}</span>
+                        <div class="botoes">
+                            <button class="btn-editar" onclick="editarPedido(${pedido.id}, '${pedido.item}', ${pedido.valor})">Editar</button>
+                            <button class="btn-excluir" onclick="excluirPedido(${pedido.id})">Excluir</button>
+                        </div>
                     </li>
                 `).join('');
             }

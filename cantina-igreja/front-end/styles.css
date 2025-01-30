@@ -50,7 +50,7 @@ button:hover {
 ul {
     list-style-type: none;
     padding: 0;
-    max-width: 400px;
+    max-width: 600px; /* Aumentei a largura para acomodar as colunas */
     margin: 0 auto;
 }
 
@@ -76,10 +76,14 @@ h2 {
 }
 
 /* Estilos para os botões de editar e excluir */
+.botoes {
+    display: flex;
+    gap: 5px; /* Espaço entre os botões */
+}
+
 .btn-editar, .btn-excluir {
     padding: 5px 10px;
     font-size: 12px;
-    margin-left: 5px;
 }
 
 .btn-editar {
