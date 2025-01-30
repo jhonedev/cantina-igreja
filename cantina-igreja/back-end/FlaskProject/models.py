@@ -42,20 +42,32 @@ def calcular_total():
     conn.close()
     return total if total else 0
 
-# Excluir pedido
+# Função para excluir um pedido
 def excluir_pedido(id):
     conn = conectar_banco()
     cursor = conn.cursor()
-    cursor.execute('DELETE FROM pedidos WHERE id = %s', (id,))
-    conn.commit()
-    cursor.close()
-    conn.close()
+    try:
+        cursor.execute('DELETE FROM pedidos WHERE id = %s', (id,))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Erro ao excluir pedido: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
 
-# Editar pedido
+# Função para editar um pedido
 def editar_pedido(id, novo_item, novo_valor):
     conn = conectar_banco()
     cursor = conn.cursor()
-    cursor.execute('UPDATE pedidos SET item = %s, valor = %s WHERE id = %s', (novo_item, novo_valor, id))
-    conn.commit()
-    cursor.close()
-    conn.close()
+    try:
+        cursor.execute('UPDATE pedidos SET item = %s, valor = %s WHERE id = %s', (novo_item, novo_valor, id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Erro ao editar pedido: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
