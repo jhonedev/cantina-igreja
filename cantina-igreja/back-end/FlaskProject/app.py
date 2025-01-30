@@ -1,15 +1,33 @@
 from flask import Flask, jsonify, request, abort
 from flask_cors import CORS
-from models import adicionar_pedido, listar_pedidos, calcular_total
+from models import adicionar_pedido, listar_pedidos, calcular_total, excluir_pedido, editar_pedido
 
 app = Flask(__name__)
 CORS(app)
 
-# Rota para listar todos os pedidos
+# Rota para listar pedidos com paginação
 @app.route('/api/pedidos', methods=['GET'])
 def listar_pedidos_route():
+    page = request.args.get('page', default=1, type=int)  # Página atual
+    per_page = request.args.get('per_page', default=10, type=int)  # Itens por página
+
     pedidos = listar_pedidos()
-    return jsonify([{"id": p[0], "item": p[1], "valor": p[2]} for p in pedidos])
+    total_pedidos = len(pedidos)
+
+    # Calcula o índice inicial e final para a paginação
+    start = (page - 1) * per_page
+    end = start + per_page
+
+    # Seleciona os pedidos da página atual
+    pedidos_paginados = pedidos[start:end]
+
+    return jsonify({
+        "pedidos": [{"id": p[0], "item": p[1], "valor": p[2]} for p in pedidos_paginados],
+        "total_pedidos": total_pedidos,
+        "page": page,
+        "per_page": per_page,
+        "total_pages": (total_pedidos + per_page - 1) // per_page
+    })
 
 # Rota para adicionar um novo pedido
 @app.route('/api/pedidos', methods=['POST'])

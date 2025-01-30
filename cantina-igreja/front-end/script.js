@@ -2,15 +2,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('formPedido');
     const listaPedidos = document.getElementById('listaPedidos');
     const totalElement = document.getElementById('total');
+    const paginacao = document.getElementById('paginacao');
 
-    // Função para carregar a lista de pedidos
-    async function carregarPedidos() {
+    let currentPage = 1;
+    const perPage = 10; // Número de pedidos por página
+
+    // Função para carregar a lista de pedidos com paginação
+    async function carregarPedidos(page = 1) {
         try {
-            const response = await fetch('http://127.0.0.1:5000/api/pedidos');
-            const pedidos = await response.json();
-    
+            const response = await fetch(`http://127.0.0.1:5000/api/pedidos?page=${page}&per_page=${perPage}`);
+            const data = await response.json();
+
             if (listaPedidos) {
-                listaPedidos.innerHTML = pedidos.map(pedido => `
+                listaPedidos.innerHTML = data.pedidos.map(pedido => `
                     <li>
                         <span>${pedido.item} - R$ ${Number(pedido.valor).toFixed(2)}</span>
                         <div class="botoes">
@@ -20,17 +24,61 @@ document.addEventListener('DOMContentLoaded', () => {
                     </li>
                 `).join('');
             }
+
+            if (paginacao) {
+                atualizarPaginacao(data.total_pages, page);
+            }
         } catch (error) {
             console.error('Erro ao carregar pedidos:', error);
         }
     }
 
+    // Função para atualizar os controles de paginação
+    function atualizarPaginacao(totalPages, currentPage) {
+        paginacao.innerHTML = '';
+
+        if (currentPage > 1) {
+            const btnAnterior = document.createElement('button');
+            btnAnterior.textContent = 'Anterior';
+            btnAnterior.addEventListener('click', () => {
+                currentPage--;
+                carregarPedidos(currentPage);
+            });
+            paginacao.appendChild(btnAnterior);
+        }
+
+        for (let i = 1; i <= totalPages; i++) {
+            const btnPagina = document.createElement('button');
+            btnPagina.textContent = i;
+            if (i === currentPage) {
+                btnPagina.disabled = true;
+                btnPagina.style.backgroundColor = '#4CAF50';
+            }
+            btnPagina.addEventListener('click', () => {
+                currentPage = i;
+                carregarPedidos(currentPage);
+            });
+            paginacao.appendChild(btnPagina);
+        }
+
+        if (currentPage < totalPages) {
+            const btnProximo = document.createElement('button');
+            btnProximo.textContent = 'Próximo';
+            btnProximo.addEventListener('click', () => {
+                currentPage++;
+                carregarPedidos(currentPage);
+            });
+            paginacao.appendChild(btnProximo);
+        }
+    }
+
+    // Função para excluir um pedido
     async function excluirPedido(id) {
         if (confirm('Tem certeza que deseja excluir este pedido?')) {
             try {
                 const response = await fetch(`http://127.0.0.1:5000/api/pedidos/${id}`, { method: 'DELETE' });
                 if (response.ok) {
-                    carregarPedidos();
+                    carregarPedidos(currentPage);
                     if (totalElement) carregarTotal();
                 } else {
                     console.error('Erro ao excluir pedido');
@@ -40,7 +88,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     }
-    
+
+    // Função para editar um pedido
     function editarPedido(id, itemAtual, valorAtual) {
         const novoItem = prompt("Editar item:", itemAtual);
         const novoValor = parseFloat(prompt("Editar valor:", valorAtual));
@@ -53,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(response => {
                 if (response.ok) {
-                    carregarPedidos();
+                    carregarPedidos(currentPage);
                     if (totalElement) carregarTotal();
                 } else {
                     console.error('Erro ao editar pedido');
@@ -62,8 +111,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(error => console.error('Erro ao editar pedido:', error));
         }
     }
-    
-    // Função para carregar apenas o valor total
+
+    // Função para carregar o total
     async function carregarTotal() {
         try {
             const totalResponse = await fetch('http://127.0.0.1:5000/api/total');
@@ -91,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
                 if (response.ok) {
                     form.reset();
-                    // Atualiza o valor total imediatamente após adicionar o pedido
+                    carregarPedidos(currentPage); // Recarrega a lista de pedidos após adicionar
                     carregarTotal();
                 } else {
                     console.error('Erro ao adicionar pedido:', response.statusText);
@@ -109,6 +158,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Carregar a lista de pedidos apenas na página pedidos.html
     if (window.location.pathname.endsWith('pedidos.html')) {
-        carregarPedidos();
+        carregarPedidos(currentPage);
     }
 });
