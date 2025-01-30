@@ -9,13 +9,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch('http://127.0.0.1:5000/api/pedidos');
             const pedidos = await response.json();
     
-            listaPedidos.innerHTML = pedidos.map(pedido => `
-                <li>
-                    ${pedido.item} - R$ ${Number(pedido.valor).toFixed(2)}
-                    <button onclick="editarPedido(${pedido.id}, '${pedido.item}', ${pedido.valor})">✏️</button>
-                    <button onclick="excluirPedido(${pedido.id})">🗑️</button>
-                </li>
-            `).join('');
+            if (listaPedidos) {
+                listaPedidos.innerHTML = pedidos.map(pedido => `
+                    <li>
+                        ${pedido.item} - R$ ${Number(pedido.valor).toFixed(2)}
+                        <button onclick="editarPedido(${pedido.id}, '${pedido.item}', ${pedido.valor})">✏️</button>
+                        <button onclick="excluirPedido(${pedido.id})">🗑️</button>
+                    </li>
+                `).join('');
+            }
         } catch (error) {
             console.error('Erro ao carregar pedidos:', error);
         }
@@ -27,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`http://127.0.0.1:5000/api/pedidos/${id}`, { method: 'DELETE' });
                 if (response.ok) {
                     carregarPedidos();
-                    carregarTotal();
+                    if (totalElement) carregarTotal();
                 } else {
                     console.error('Erro ao excluir pedido');
                 }
@@ -50,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(response => {
                 if (response.ok) {
                     carregarPedidos();
-                    carregarTotal();
+                    if (totalElement) carregarTotal();
                 } else {
                     console.error('Erro ao editar pedido');
                 }
@@ -64,37 +66,47 @@ document.addEventListener('DOMContentLoaded', () => {
         try {
             const totalResponse = await fetch('http://127.0.0.1:5000/api/total');
             const { total } = await totalResponse.json();
-            totalElement.textContent = Number(total).toFixed(2);
+            if (totalElement) {
+                totalElement.textContent = Number(total).toFixed(2);
+            }
         } catch (error) {
             console.error('Erro ao carregar o total:', error);
         }
     }
 
     // Adicionar um novo pedido
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const item = document.getElementById('item').value;
-        const valor = parseFloat(document.getElementById('valor').value);
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const item = document.getElementById('item').value;
+            const valor = parseFloat(document.getElementById('valor').value);
 
-        try {
-            const response = await fetch('http://127.0.0.1:5000/api/pedidos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ item, valor })
-            });
-            if (response.ok) {
-                form.reset();
-                // Atualiza apenas o valor total, sem recarregar a lista de pedidos
-                carregarTotal();
-            } else {
-                console.error('Erro ao adicionar pedido:', response.statusText);
+            try {
+                const response = await fetch('http://127.0.0.1:5000/api/pedidos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ item, valor })
+                });
+                if (response.ok) {
+                    form.reset();
+                    // Atualiza o valor total imediatamente após adicionar o pedido
+                    carregarTotal();
+                } else {
+                    console.error('Erro ao adicionar pedido:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Erro ao adicionar pedido:', error);
             }
-        } catch (error) {
-            console.error('Erro ao adicionar pedido:', error);
-        }
-    });
+        });
+    }
 
-    // Carregar pedidos e total ao iniciar a página
-    carregarTotal();
-    carregarPedidos();
+    // Carregar o total sempre que a página index.html for carregada
+    if (window.location.pathname.endsWith('index.html')) {
+        carregarTotal();
+    }
+
+    // Carregar a lista de pedidos apenas na página pedidos.html
+    if (window.location.pathname.endsWith('pedidos.html')) {
+        carregarPedidos();
+    }
 });
