@@ -6,7 +6,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Rota para listar pedidos com paginação
-@app.route('/api/pedidos', methods=['GET'])
+@app.route('/api/pedidosUpa', methods=['GET'])
 def listar_pedidos_route():
     page = request.args.get('page', default=1, type=int)  # Página atual
     per_page = request.args.get('per_page', default=10, type=int)  # Itens por página
@@ -30,7 +30,7 @@ def listar_pedidos_route():
     })
 
 # Rota para adicionar um novo pedido
-@app.route('/api/pedidos', methods=['POST'])
+@app.route('/api/pedidosUpa', methods=['POST'])
 def adicionar_pedido_route():
     novo_pedido = request.json
     if not novo_pedido or not 'item' in novo_pedido or not 'valor' in novo_pedido:
@@ -40,13 +40,13 @@ def adicionar_pedido_route():
     return jsonify(novo_pedido), 201
 
 # Rota para calcular o total dos pedidos
-@app.route('/api/total', methods=['GET'])
+@app.route('/api/totalUpa', methods=['GET'])
 def calcular_total_route():
     total = calcular_total()
     return jsonify({"total": total})
 
 # Rota para excluir um pedido
-@app.route('/api/pedidos/<int:pedido_id>', methods=['DELETE'])
+@app.route('/api/pedidosUpa/<int:pedido_id>', methods=['DELETE'])
 def excluir_pedido_route(pedido_id):
     sucesso = excluir_pedido(pedido_id)
     if sucesso:
@@ -55,7 +55,7 @@ def excluir_pedido_route(pedido_id):
         abort(404, description="Pedido não encontrado")
 
 # Rota para editar um pedido
-@app.route('/api/pedidos/<int:pedido_id>', methods=['PUT'])
+@app.route('/api/pedidosUpa/<int:pedido_id>', methods=['PUT'])
 def editar_pedido_route(pedido_id):
     dados = request.json
     if not dados or 'item' not in dados or 'valor' not in dados:

@@ -5,7 +5,7 @@ const perPage = 10; // Número de pedidos por página
 // Função para carregar a lista de pedidos com paginação
 async function carregarPedidos(page = 1) {
     try {
-        const response = await fetch(`http://127.0.0.1:5000/api/pedidos?page=${page}&per_page=${perPage}`);
+        const response = await fetch(`http://127.0.0.1:5000/api/pedidosUpa?page=${page}&per_page=${perPage}`);
         const data = await response.json();
 
         const listaPedidos = document.getElementById('listaPedidos');
@@ -74,7 +74,7 @@ function atualizarPaginacao(totalPages, currentPage) {
 // Função para carregar o total
 async function carregarTotal() {
     try {
-        const totalResponse = await fetch('http://127.0.0.1:5000/api/total');
+        const totalResponse = await fetch('http://127.0.0.1:5000/api/totalUpa');
         const { total } = await totalResponse.json();
         const totalElement = document.getElementById('total');
         if (totalElement) {
@@ -89,7 +89,7 @@ async function carregarTotal() {
 async function excluirPedido(id) {
     if (confirm('Tem certeza que deseja excluir este pedido?')) {
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/pedidos/${id}`, { method: 'DELETE' });
+            const response = await fetch(`http://127.0.0.1:5000/api/pedidosUpa/${id}`, { method: 'DELETE' });
             if (response.ok) {
                 await carregarPedidos(currentPage); // Recarrega a lista de pedidos após excluir
                 await carregarTotal(); // Atualiza o total
@@ -109,7 +109,7 @@ async function editarPedido(id, itemAtual, valorAtual) {
     
     if (novoItem && !isNaN(novoValor)) {
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/pedidos/${id}`, {
+            const response = await fetch(`http://127.0.0.1:5000/api/pedidosUpa/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ item: novoItem, valor: novoValor })
@@ -138,7 +138,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const valor = parseFloat(document.getElementById('valor').value);
 
             try {
-                const response = await fetch('http://127.0.0.1:5000/api/pedidos', {
+                const response = await fetch('http://127.0.0.1:5000/api/pedidosUpa', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ item, valor })
@@ -156,13 +156,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Carregar o total sempre que a página index.html for carregada
-    if (window.location.pathname.endsWith('index.html')) {
+    // Carregar o total sempre que a página cantinaUpa.html for carregada
+    if (window.location.pathname.endsWith('cantinaUpa.html')) {
         carregarTotal();
     }
 
-    // Carregar a lista de pedidos apenas na página pedidos.html
-    if (window.location.pathname.endsWith('pedidos.html')) {
+    // Carregar a lista de pedidos apenas na página pedidosUpa.html
+    if (window.location.pathname.endsWith('pedidosUpa.html')) {
         carregarPedidos(currentPage);
     }
 });
