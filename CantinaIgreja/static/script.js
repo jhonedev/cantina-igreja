@@ -157,12 +157,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Carregar o total sempre que a página cantinaUpa.html for carregada
-    if (window.location.pathname.endsWith('cantinaUpa.html')) {
+    if (window.location.pathname.endsWith('cantinaUpa')) {
         carregarTotal();
     }
 
     // Carregar a lista de pedidos apenas na página pedidosUpa.html
-    if (window.location.pathname.endsWith('pedidosUpa.html')) {
+    if (window.location.pathname.endsWith('pedidosUpa')) {
         carregarPedidos(currentPage);
     }
 });

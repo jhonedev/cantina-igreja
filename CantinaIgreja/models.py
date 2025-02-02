@@ -4,7 +4,7 @@ import os
 
 load_dotenv()
 
-# Criar uma função para conectar ao banco de dados
+# Função para conectar ao banco de dados
 def conectar_banco():
     return mysql.connector.connect(
         host=os.getenv("DB_HOST"),
@@ -13,7 +13,7 @@ def conectar_banco():
         database=os.getenv("DB_NAME")
     )
 
-# Criar pedido
+# Funções para interagir com o banco de dados
 def adicionar_pedido(item, valor):
     conn = conectar_banco()
     cursor = conn.cursor()
@@ -22,7 +22,6 @@ def adicionar_pedido(item, valor):
     cursor.close()
     conn.close()
 
-# Listar pedidos
 def listar_pedidos():
     conn = conectar_banco()
     cursor = conn.cursor()
@@ -32,7 +31,6 @@ def listar_pedidos():
     conn.close()
     return pedidos
 
-# Calcular total
 def calcular_total():
     conn = conectar_banco()
     cursor = conn.cursor()
@@ -42,7 +40,6 @@ def calcular_total():
     conn.close()
     return total if total else 0
 
-# Função para excluir um pedido
 def excluir_pedido(id):
     conn = conectar_banco()
     cursor = conn.cursor()
@@ -57,7 +54,6 @@ def excluir_pedido(id):
         cursor.close()
         conn.close()
 
-# Função para editar um pedido
 def editar_pedido(id, novo_item, novo_valor):
     conn = conectar_banco()
     cursor = conn.cursor()
