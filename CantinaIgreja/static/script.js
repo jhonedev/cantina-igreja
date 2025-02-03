@@ -1,11 +1,21 @@
-// Variáveis globais
 let currentPage = 1;
-const perPage = 10; // Número de pedidos por página
+const perPage = 10;
 
-// Função para carregar a lista de pedidos com paginação
+function getCurrentCantina() {
+    const path = window.location.pathname.toLowerCase();
+    const cantinas = ['upa', 'saf', 'uph', 'mocidade'];
+    for (let cantina of cantinas) {
+        if (path.includes(`cantina${cantina}`) || path.includes(`pedidos${cantina}`)) {
+            return cantina;
+        }
+    }
+    return 'upa';
+}
+
 async function carregarPedidos(page = 1) {
+    const cantina = getCurrentCantina();
     try {
-        const response = await fetch(`http://127.0.0.1:5000/api/pedidosUpa?page=${page}&per_page=${perPage}`);
+        const response = await fetch(`http://127.0.0.1:5000/api/pedidos/${cantina}?page=${page}&per_page=${perPage}`);
         const data = await response.json();
 
         const listaPedidos = document.getElementById('listaPedidos');
@@ -31,7 +41,6 @@ async function carregarPedidos(page = 1) {
     }
 }
 
-// Função para atualizar os controles de paginação
 function atualizarPaginacao(totalPages, currentPage) {
     const paginacao = document.getElementById('paginacao');
     paginacao.innerHTML = '';
@@ -71,10 +80,10 @@ function atualizarPaginacao(totalPages, currentPage) {
     }
 }
 
-// Função para carregar o total
 async function carregarTotal() {
+    const cantina = getCurrentCantina();
     try {
-        const totalResponse = await fetch('http://127.0.0.1:5000/api/totalUpa');
+        const totalResponse = await fetch(`http://127.0.0.1:5000/api/total/${cantina}`);
         const { total } = await totalResponse.json();
         const totalElement = document.getElementById('total');
         if (totalElement) {
@@ -85,16 +94,14 @@ async function carregarTotal() {
     }
 }
 
-// Função para excluir um pedido
 async function excluirPedido(id) {
     if (confirm('Tem certeza que deseja excluir este pedido?')) {
+        const cantina = getCurrentCantina();
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/pedidosUpa/${id}`, { method: 'DELETE' });
+            const response = await fetch(`http://127.0.0.1:5000/api/pedidos/${cantina}/${id}`, { method: 'DELETE' });
             if (response.ok) {
-                await carregarPedidos(currentPage); // Recarrega a lista de pedidos após excluir
-                await carregarTotal(); // Atualiza o total
-            } else {
-                console.error('Erro ao excluir pedido');
+                await carregarPedidos(currentPage);
+                await carregarTotal();
             }
         } catch (error) {
             console.error('Erro ao excluir pedido:', error);
@@ -102,23 +109,21 @@ async function excluirPedido(id) {
     }
 }
 
-// Função para editar um pedido
 async function editarPedido(id, itemAtual, valorAtual) {
     const novoItem = prompt("Editar item:", itemAtual);
     const novoValor = parseFloat(prompt("Editar valor:", valorAtual));
     
     if (novoItem && !isNaN(novoValor)) {
+        const cantina = getCurrentCantina();
         try {
-            const response = await fetch(`http://127.0.0.1:5000/api/pedidosUpa/${id}`, {
+            const response = await fetch(`http://127.0.0.1:5000/api/pedidos/${cantina}/${id}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ item: novoItem, valor: novoValor })
             });
             if (response.ok) {
-                await carregarPedidos(currentPage); // Recarrega a lista de pedidos após editar
-                await carregarTotal(); // Atualiza o total
-            } else {
-                console.error('Erro ao editar pedido');
+                await carregarPedidos(currentPage);
+                await carregarTotal();
             }
         } catch (error) {
             console.error('Erro ao editar pedido:', error);
@@ -126,29 +131,25 @@ async function editarPedido(id, itemAtual, valorAtual) {
     }
 }
 
-// Inicialização da página
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('formPedido');
-
-    // Adicionar um novo pedido
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const cantina = getCurrentCantina();
             const item = document.getElementById('item').value;
             const valor = parseFloat(document.getElementById('valor').value);
 
             try {
-                const response = await fetch('http://127.0.0.1:5000/api/pedidosUpa', {
+                const response = await fetch(`http://127.0.0.1:5000/api/pedidos/${cantina}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ item, valor })
                 });
                 if (response.ok) {
                     form.reset();
-                    await carregarPedidos(currentPage); // Recarrega a lista de pedidos após adicionar
-                    await carregarTotal(); // Atualiza o total
-                } else {
-                    console.error('Erro ao adicionar pedido:', response.statusText);
+                    await carregarPedidos(currentPage);
+                    await carregarTotal();
                 }
             } catch (error) {
                 console.error('Erro ao adicionar pedido:', error);
@@ -156,13 +157,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Carregar o total sempre que a página cantinaUpa.html for carregada
-    if (window.location.pathname.endsWith('cantinaUpa')) {
+    if (window.location.pathname.includes('cantina')) {
         carregarTotal();
     }
 
-    // Carregar a lista de pedidos apenas na página pedidosUpa.html
-    if (window.location.pathname.endsWith('pedidosUpa')) {
+    if (window.location.pathname.includes('pedidos')) {
         carregarPedidos(currentPage);
     }
 });

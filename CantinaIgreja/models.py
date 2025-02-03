@@ -1,10 +1,16 @@
 import mysql.connector
 from dotenv import load_dotenv
 import os
+from mysql.connector import Error
 
 load_dotenv()
 
-# Função para conectar ao banco de dados
+allowed_cantinas = ['upa', 'saf', 'uph', 'mocidade']
+
+def validar_cantina(cantina):
+    if cantina not in allowed_cantinas:
+        raise ValueError(f"Cantina inválida: {cantina}")
+
 def conectar_banco():
     return mysql.connector.connect(
         host=os.getenv("DB_HOST"),
@@ -13,57 +19,120 @@ def conectar_banco():
         database=os.getenv("DB_NAME")
     )
 
-# Funções para interagir com o banco de dados
-def adicionar_pedido(item, valor):
-    conn = conectar_banco()
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO pedidos (item, valor) VALUES (%s, %s)', (item, valor))
-    conn.commit()
-    cursor.close()
-    conn.close()
-
-def listar_pedidos():
-    conn = conectar_banco()
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM pedidos')
-    pedidos = cursor.fetchall()
-    cursor.close()
-    conn.close()
-    return pedidos
-
-def calcular_total():
-    conn = conectar_banco()
-    cursor = conn.cursor()
-    cursor.execute('SELECT SUM(valor) FROM pedidos')
-    total = cursor.fetchone()[0]
-    cursor.close()
-    conn.close()
-    return total if total else 0
-
-def excluir_pedido(id):
+def adicionar_pedido(cantina, item, valor):
+    validar_cantina(cantina)
     conn = conectar_banco()
     cursor = conn.cursor()
     try:
-        cursor.execute('DELETE FROM pedidos WHERE id = %s', (id,))
+        cursor.execute(f'INSERT INTO pedidos_{cantina} (item, valor) VALUES (%s, %s)', (item, valor))
         conn.commit()
-        return True
-    except Exception as e:
+    except Error as e:
+        print(f"Erro ao adicionar pedido: {e}")
+        raise
+    finally:
+        cursor.close()
+        conn.close()
+
+def listar_pedidos(cantina):
+    validar_cantina(cantina)
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f'SELECT * FROM pedidos_{cantina}')
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        conn.close()
+
+def calcular_total(cantina):
+    validar_cantina(cantina)
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f'SELECT SUM(valor) FROM pedidos_{cantina}')
+        total = cursor.fetchone()[0]
+        return total if total else 0
+    finally:
+        cursor.close()
+        conn.close()
+
+def excluir_pedido(cantina, id):
+    validar_cantina(cantina)
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    try:
+        cursor.execute(f'DELETE FROM pedidos_{cantina} WHERE id = %s', (id,))
+        conn.commit()
+        return cursor.rowcount > 0
+    except Error as e:
         print(f"Erro ao excluir pedido: {e}")
         return False
     finally:
         cursor.close()
         conn.close()
 
-def editar_pedido(id, novo_item, novo_valor):
+def editar_pedido(cantina, id, novo_item, novo_valor):
+    validar_cantina(cantina)
     conn = conectar_banco()
     cursor = conn.cursor()
     try:
-        cursor.execute('UPDATE pedidos SET item = %s, valor = %s WHERE id = %s', (novo_item, novo_valor, id))
+        cursor.execute(
+            f'UPDATE pedidos_{cantina} SET item = %s, valor = %s WHERE id = %s',
+            (novo_item, novo_valor, id)
+        )
         conn.commit()
-        return True
-    except Exception as e:
+        return cursor.rowcount > 0
+    except Error as e:
         print(f"Erro ao editar pedido: {e}")
         return False
     finally:
         cursor.close()
         conn.close()
+
+def criar_tabelas_se_nao_existirem():
+    conn = conectar_banco()
+    cursor = conn.cursor()
+    
+    tabelas = {
+        'upa': """
+            CREATE TABLE IF NOT EXISTS pedidos_upa (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                item VARCHAR(255) NOT NULL,
+                valor DECIMAL(10, 2) NOT NULL
+            )
+        """,
+        'saf': """
+            CREATE TABLE IF NOT EXISTS pedidos_saf (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                item VARCHAR(255) NOT NULL,
+                valor DECIMAL(10, 2) NOT NULL
+            )
+        """,
+        'uph': """
+            CREATE TABLE IF NOT EXISTS pedidos_uph (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                item VARCHAR(255) NOT NULL,
+                valor DECIMAL(10, 2) NOT NULL
+            )
+        """,
+        'mocidade': """
+            CREATE TABLE IF NOT EXISTS pedidos_mocidade (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                item VARCHAR(255) NOT NULL,
+                valor DECIMAL(10, 2) NOT NULL
+            )
+        """
+    }
+
+    try:
+        for cantina, sql in tabelas.items():
+            cursor.execute(sql)
+        conn.commit()
+    except Error as e:
+        print(f"Erro ao criar tabelas: {e}")
+    finally:
+        cursor.close()
+        conn.close()
+
+# Chame a função no final do arquivo models.py
+criar_tabelas_se_nao_existirem()
