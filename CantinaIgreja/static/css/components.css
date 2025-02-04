@@ -1,0 +1,90 @@
+/* components.css */
+#formPedido { /* Alterado de .form-pedido para #formPedido */
+    max-width: 600px;   /* Novo */
+    margin: 0 auto;     /* Novo - centraliza o formulário */
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+#formPedido label {
+    display: block;
+    margin: 15px 0 5px; /* Ajuste no espaçamento */
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+#formPedido input {
+    width: 100%;
+    padding: 12px;      /* Aumentado de 10px */
+    border: 2px solid #ced4da;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+#formPedido button {
+    width: 100%;        /* Novo - botão ocupa toda a largura */
+    margin-top: 15px;
+    padding: 14px;
+    font-size: 1.1rem;
+}
+
+#listaPedidos {
+    list-style-type: none; /* Garante remoção dos bullets */
+    padding: 0;
+}
+
+#listaPedidos li {
+    display: flex;
+    justify-content: space-between; /* Garante alinhamento lateral */
+    align-items: center;
+    padding: 15px;
+    margin-bottom: 10px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Paginação */
+#paginacao {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.btn-editar {
+    background-color: #2196F3;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+}
+
+.btn-excluir {
+    background-color: #f44336;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+}
+
+.btn-editar:hover {
+    background-color: #1e88e5;
+}
+
+.btn-excluir:hover {
+    background-color: #e53935;
+}
+
+.botoes {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;  /* Novo - empurra os botões para a direita */
+}
+
+/* Garanta o estilo da paginação */
+#paginacao button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}

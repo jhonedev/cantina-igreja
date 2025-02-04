@@ -1,0 +1,29 @@
+/* Layout structure */
+.header-image {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.navbar {
+    padding: 0.5rem 1rem;
+    background-color: #f8f9fa !important;
+}
+
+.container {
+    margin-top: 100px;
+}
+
+@media (max-width: 768px) {
+    .container {
+        margin-top: 80px;
+    }
+}
+
+.img-logo {
+    width: 180px; /* Adicione esta regra */
+    height: auto;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
