@@ -8,13 +8,21 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <div class="header-image">
+        <img src="{{ url_for('static', filename='images/logo_uph.png') }}" 
+            alt="Logo UPH" 
+            class="img-logo">
+    </div>
+
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
             <a class="navbar-brand" href="{{ url_for('index') }}">Início</a>
         </div>
     </nav>
+
     <div class="container">
-        <h1>Cantina UPH</h1>
+        <h1>Cantina UPH</h1>        
+
         <form id="formPedido">
             <label for="item">Item:</label>
             <input type="text" id="item" name="item" required>
@@ -22,6 +30,7 @@
             <input type="number" id="valor" name="valor" step="0.01" required>
             <button type="submit">Adicionar Pedido</button>
         </form>
+
         <h2>Total: R$ <span id="total">0.00</span></h2>
         <div class="mt-4">
             <a href="{{ url_for('pedidosUph') }}" class="btn btn-primary">Ver Lista de Pedidos</a>

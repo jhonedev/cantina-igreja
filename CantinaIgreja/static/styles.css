@@ -163,3 +163,54 @@ h1 {
     background-color: #45a049;
     border-color: #45a049;
 }
+
+.banner-cantina {
+    margin: 20px 0;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.banner-cantina img {
+    border: 3px solid #4CAF50;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.banner-cantina img:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+
+
+/* Adicione isto ao seu styles.css */
+.header-image {
+    position: fixed; /* Alterado para fixed para melhor comportamento */
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+
+.img-logo {
+    width: 180px; /* Tamanho uniforme para todas */
+    height: auto;
+    transition: transform 0.3s ease;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+/* Garanta que o conteúdo principal não fique escondido */
+.container {
+    margin-top: 80px; /* Espaço para a imagem fixa */
+}
+
+@media (max-width: 768px) {
+    .header-image {
+        top: 10px;
+        right: 10px;
+    }
+    .img-logo {
+        width: 120px; /* Tamanho menor para mobile */
+    }
+    .container {
+        margin-top: 60px; /* Ajuste de espaçamento para mobile */
+    }
+}

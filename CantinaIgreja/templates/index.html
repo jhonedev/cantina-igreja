@@ -8,6 +8,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
+    <!-- Imagem posicionada absolutamente -->
+    <div class="header-image">
+        <img src="{{ url_for('static', filename='images/logo_ipbrasil.png') }}" 
+             alt="Logo Igreja" 
+             class="img-logo">
+    </div>
+
     <!-- Navbar -->
     <nav class="navbar navbar-light bg-light">
         <div class="container-fluid">
@@ -23,9 +30,9 @@
         <!-- Links para as cantinas -->
         <div class="d-grid gap-2 col-6 mx-auto">
             <a href="{{ url_for('cantinaUpa') }}" class="btn btn-primary btn-lg">Cantina UPA</a>
-            <a href="{{ url_for('cantinaSaf') }}" class="btn btn-primary btn-lg">Cantina SAF</a>
             <a href="{{ url_for('cantinaUph') }}" class="btn btn-primary btn-lg">Cantina UPH</a>
-            <a href="{{ url_for('cantinaMocidade') }}" class="btn btn-primary btn-lg">Cantina Mocidade</a>
+            <a href="{{ url_for('cantinaMocidade') }}" class="btn btn-primary btn-lg">Cantina UMP</a>
+            <a href="{{ url_for('cantinaSaf') }}" class="btn btn-primary btn-lg">Cantina SAF</a>
         </div>
     </div>
 
